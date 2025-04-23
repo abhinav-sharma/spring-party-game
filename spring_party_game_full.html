@@ -1,0 +1,212 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring Party Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f8ff; text-align: center; padding: 30px; }
+        .round { margin: 10px; padding: 10px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; font-size: 18px; }
+        .question-box { display: none; margin-top: 20px; }
+        #timer { font-size: 30px; margin: 20px 0; }
+        #next-btn, #back-btn { margin: 10px; padding: 10px 20px; background: #008CBA; color: white; border: none; cursor: pointer; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <h1>Spring Party Game</h1>
+    <div id="round-selection">
+        <h2>Select a Round</h2>
+    </div>
+
+    <div class="question-box" id="question-box">
+        <h2 id="round-title"></h2>
+        <div id="question-text"></div>
+        <div id="timer">60</div>
+        <button id="next-btn">Next Question</button>
+        <button id="back-btn">Back to Rounds</button>
+    </div>
+
+    <script>
+        const rounds = {
+            "Quirky Icebreakers": [
+                "If you were a vegetable, which one would you be and why?",
+                "What’s your 'useless' hidden talent?",
+                "What’s the weirdest thing you've ever eaten… and liked?",
+                "Which cartoon character do you secretly relate to?",
+                "Would you rather fight one horse-sized duck or 100 duck-sized horses?"
+            ],
+            "Awkwardly Relatable": [
+                "What's your go-to excuse when you're late for a Zoom call?",
+                "If your pet could talk, what scandalous secret would it reveal about you?",
+                "What’s the weirdest thing you believed as a kid?",
+                "What was your most embarrassing fashion phase?",
+                "What’s something that instantly makes you feel old?"
+            ],
+            "Unexpected Choices": [
+                "If you could only eat one food for the rest of your life—but it gives you a superpower—what food would you choose?",
+                "Would you rather have a rewind button or a mute button for people?",
+                "What job would you be terrible at… but still want to try for one day?",
+                "What’s a movie title that describes your life today?",
+                "What would your walk-up song be if you entered every room like a pro wrestler?"
+            ],
+            "Spring Vibes Edition": [
+                "If spring cleaning applied to your personality, what would you 'throw out'?",
+                "Which flower do you think matches your personality—and why is it secretly a cactus?",
+                "What’s your “spring anthem” song?",
+                "Would you rather always sneeze like a pollen-allergic panda or sweat flower petals?",
+                "If your life were a picnic, what food would be missing?"
+            ],
+            "Would You Rather: Ridiculous Edition": [
+                "Would you rather always have to sing instead of speak or dance everywhere you walk?",
+                "Would you rather have fingers as long as spaghetti or toes that glow in the dark?",
+                "Would you rather be able to talk to squirrels or have a personal theme song play every time you enter a room?",
+                "Would you rather wear socks full of jelly or shoes that squeak with every step?",
+                "Would you rather have unlimited pizza but never ice cream, or unlimited ice cream but no pizza ever again?"
+            ],
+            "If You Could...": [
+                "If you could switch lives with any fictional character for a day, who would it be?",
+                "If you could only wear one color for the rest of your life, what would it be—and why?",
+                "If you could invent a holiday, what would it celebrate?",
+                "If you could have a pet dinosaur, which one are you choosing and what’s its name?",
+                "If you could delete one chore from existence, what would it be?"
+            ],
+            "The Weird Side of You": [
+                "What’s something weird that you do when no one’s watching?",
+                "If your phone could talk, what would it roast you for?",
+                "What’s the strangest dream you’ve ever had?",
+                "If you had to give your most-used object at home a dramatic name, what would it be?",
+                "What’s your most irrational fear?"
+            ],
+            "Back in the Day": [
+                "What was your first-ever email address (or AIM handle)—and be honest!",
+                "What fashion trend did you fully embrace… and now regret?",
+                "What toy or game from childhood would you still play with today?",
+                "What was the first concert or movie you ever saw that made you feel “cool”?",
+                "As a kid, what did you think being an adult would be like?"
+            ],
+            "Rapid Fire Ridiculousness": [
+                "Pineapple on pizza: genius or crime?",
+                "What’s your zombie apocalypse survival weapon?",
+                "If you could rename yourself right now, what would you pick?",
+                "What song do you secretly love but would NEVER admit to (except now)?",
+                "What animal would be 100x scarier if it were human-sized?"
+            ],
+            "Secret Life": [
+                "What job would you have in a circus?",
+                "If you were a superhero, what would be your totally useless power?",
+                "If your life had a narrator, who would you want it to be?",
+                "What’s the secret talent that would win you a weird competition?",
+                "If you could live inside any TV show, which one would it be?"
+            ],
+            "The Food Files": [
+                "What food do you pretend to like but secretly hate?",
+                "If you could invent a new ice cream flavor, what would it be?",
+                "What’s your most controversial food opinion?",
+                "If you were a chef, what would your signature dish be (name it creatively!)?",
+                "Would you rather give up coffee or chocolate forever?"
+            ],
+            "Animal Instincts": [
+                "If you could be any animal for a day, what would you be and why?",
+                "What animal best matches your personality on a Monday morning?",
+                "Which animal would make the worst boss—and why?",
+                "If pets could talk, which would be the most annoying?",
+                "Would you rather wrestle a kangaroo or out-run a giraffe?"
+            ],
+            "Office Antics": [
+                "If your desk could talk, what would it say about you?",
+                "What’s your most impressive office-related skill?",
+                "Who in the office is most likely to survive a zombie apocalypse—and why?",
+                "If you could ban one office phrase forever, what would it be?",
+                "What’s the weirdest thing you’ve ever seen happen at work?"
+            ],
+            "Time Traveler’s Dilemma": [
+                "If you could visit any year in history, where are you going?",
+                "Would you rather meet your past self or your future self?",
+                "What outdated technology do you secretly miss?",
+                "If you could bring one modern thing to the 1800s, what would it be?",
+                "What fashion trend from the past do you want to bring back?"
+            ],
+            "Quirky Icebreakers": [
+                "If you were a vegetable, which one would you be and why?",
+                "What’s your 'useless' hidden talent?",
+                "What’s the weirdest thing you've ever eaten… and liked?",
+                "Which cartoon character do you secretly relate to?",
+                "Would you rather fight one horse-sized duck or 100 duck-sized horses?"
+            ],
+            "Awkwardly Relatable": [
+                "What's your go-to excuse when you're late for a Zoom call?",
+                "If your pet could talk, what scandalous secret would it reveal about you?",
+                "What’s the weirdest thing you believed as a kid?",
+                "What was your most embarrassing fashion phase?",
+                "What’s something that instantly makes you feel old?"
+            ]
+        };
+
+        const roundSelection = document.getElementById('round-selection');
+        const questionBox = document.getElementById('question-box');
+        const questionText = document.getElementById('question-text');
+        const roundTitle = document.getElementById('round-title');
+        const timerDisplay = document.getElementById('timer');
+        const nextBtn = document.getElementById('next-btn');
+        const backBtn = document.getElementById('back-btn');
+
+        let currentRound = [];
+        let currentQuestionIndex = 0;
+        let timerInterval;
+
+        for (const title in rounds) {
+            const btn = document.createElement('button');
+            btn.innerText = title;
+            btn.className = 'round';
+            btn.onclick = () => startRound(title);
+            roundSelection.appendChild(btn);
+        }
+
+        function startRound(title) {
+            currentRound = rounds[title];
+            currentQuestionIndex = 0;
+            roundTitle.innerText = title;
+            roundSelection.style.display = 'none';
+            questionBox.style.display = 'block';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestionIndex < currentRound.length) {
+                questionText.innerText = currentRound[currentQuestionIndex];
+                startTimer(60);
+            } else {
+                questionText.innerText = "Round Complete!";
+                timerDisplay.innerText = "";
+                nextBtn.style.display = 'none';
+            }
+        }
+
+        function startTimer(seconds) {
+            clearInterval(timerInterval);
+            let timeLeft = seconds;
+            timerDisplay.innerText = timeLeft;
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                }
+            }, 1000);
+        }
+
+        nextBtn.onclick = () => {
+            currentQuestionIndex++;
+            showQuestion();
+        };
+
+        backBtn.onclick = () => {
+            clearInterval(timerInterval);
+            questionBox.style.display = 'none';
+            roundSelection.style.display = 'block';
+            nextBtn.style.display = 'inline-block';
+        };
+    </script>
+</body>
+</html>
